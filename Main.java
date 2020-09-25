@@ -6,14 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 public class Main extends Application {
 
 
-    public double randomNumber()
+    public double getScaledValue(double sourceNumber, int scale)
     {
-        return new Random().nextDouble();
+        BigDecimal bd = new BigDecimal(sourceNumber);
+        bd = bd.setScale(scale, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override
@@ -21,37 +25,64 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
+        //primaryStage.show();
         Random numberGenerator = new Random();
 
+
+        int countTicks = 1000000;
 
         double pi_1 = 0.45;
         double pi_2 = 0.35;
         double p = 0.5;
+
+        double A = 0;
+        double Q = 0;
+        double P_otk = 0;
+        double L_c = 0;
+        double L_och = 0;
+        double W_c = 0;
+        double W_och = 0;
+        double K_channel_1 = 0;
+        double K_channel_2 = 0;
+
 
         String state = "000";
         double randomQuery = 0;
         double randomFirstChannel = 0;
         double randomSecondChannel = 0;
 
-        while(true)
+        int A_counter = 0;
+        int B_counter = 0;
+        int C_counter = 0;
+        int D_counter = 0;
+        int E_counter = 0;
+        int F_counter = 0;
+
+        int counter = 0;
+
+        while(counter < countTicks)
         {
             System.out.flush();
             System.out.println(state);
-            Thread.sleep(10);
-            randomQuery = numberGenerator.nextDouble();
-            randomFirstChannel = numberGenerator.nextDouble();
-            randomSecondChannel = numberGenerator.nextDouble();
+            randomQuery = getScaledValue(numberGenerator.nextDouble(), 2);
+            randomFirstChannel = getScaledValue(numberGenerator.nextDouble(), 2);
+            randomSecondChannel = getScaledValue(numberGenerator.nextDouble(), 2);
+
+
             if(state.equals("000")) {
                 if (randomQuery <= p) {
                     state = "000";
                 } else if (randomQuery >= p) {
                     state = "010";
                 }
+                A_counter++;
             }
 
             else if(state.equals("001"))
             {
+                B_counter++;
+                L_c++;
+
                 if(randomQuery <= p && randomSecondChannel >= pi_2)
                     state = "000";
                 else if(randomQuery <= p && randomSecondChannel <= pi_2)
@@ -60,9 +91,15 @@ public class Main extends Application {
                     state = "010";
                 else if(randomQuery >= p && randomSecondChannel <= pi_2)
                     state = "011";
+
+                if(randomSecondChannel >= pi_2)
+                    A++;
             }
             else if(state.equals("010"))
             {
+                C_counter++;
+                L_c++;
+
                 if(randomQuery <= p && randomFirstChannel <= pi_1)
                     state = "010";
                 else if(randomQuery <= p && randomFirstChannel >= pi_1)
@@ -71,13 +108,21 @@ public class Main extends Application {
                     state = "011";
                 else if(randomQuery >= p && randomFirstChannel <= pi_1)
                     state = "110";
+
+                if(randomFirstChannel >= pi_1)
+                    A++;
             }
 
             else if(state.equals("011"))
             {
-                if((randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2) ||
-                        (randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2) ||
-                        (randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2))
+                D_counter++;
+                L_c += 2;
+
+                if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
+                    state = "011";
+                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                    state = "011";
+                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
                     state = "011";
                 else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
                     state = "110";
@@ -85,34 +130,103 @@ public class Main extends Application {
                     state = "010";
                 else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
                     state = "111";
-                else if((randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2) ||
-                        (randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2))
+                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
                     state = "001";
+                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
+                    state = "001";
+
+
+                else if(randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                    A+=2;
+                else if(randomFirstChannel >= pi_1 || randomSecondChannel >= pi_2)
+                    A++;
+
             }
             else if(state.equals("110"))
             {
-                if(randomQuery <= p && randomQuery >= pi_1)
+                E_counter++;
+                L_c += 2;
+                L_och++;
+
+                if(randomQuery <= p && randomFirstChannel >= pi_1)
                     state = "011";
-                else if((randomQuery <= p && randomFirstChannel <= pi_1) || (randomQuery >= p && randomFirstChannel <= pi_1))
+                else if((randomQuery <= p && randomFirstChannel <= pi_1))
                     state = "110";
+                else if((randomQuery >= p && randomFirstChannel <= pi_1))
+                {
+                    state = "110";
+                    P_otk++;
+                }
                 else if(randomQuery >= p && randomFirstChannel >= pi_1)
                     state = "111";
+
+                if(randomFirstChannel >= pi_1)
+                    A++;
             }
             else if(state.equals("111"))
             {
-                if     ((randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2) ||
-                        (randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2) ||
-                        (randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2) ||
-                        (randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2))
+                F_counter++;
+                L_c += 3;
+                L_och++;
+
+                if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
                     state = "111";
-                else if((randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2) ||
-                        (randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel<= pi_2))
+                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
+                    state = "111";
+                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
+                    state = "111";
+
+                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
+                {
+                    state = "111";
+                    P_otk++;
+                }
+
+                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
                     state = "011";
-                else if((randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2) ||
-                        randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel<= pi_2)
+                    state = "011";
+                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
                     state = "110";
+                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
+                {
+                    state = "110";
+                    P_otk++;
+                }
+
+                if(randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                    A+= 2;
+                else if(randomFirstChannel >= pi_1 || randomSecondChannel >= pi_2)
+                    A++;
             }
+
+            ++counter;
         }
+        P_otk /= countTicks;
+        Q = 1 - P_otk;
+        A /= countTicks;
+        L_c /= countTicks;
+        L_och /= countTicks;
+        W_c = L_c / A;
+        W_och = L_och / A;
+
+        System.out.println("(А): " + A);
+        System.out.println("(Q): " + Q);
+
+        System.out.println("(Pотк): " + P_otk);
+
+        System.out.println("(Lоч): " + L_och);
+        System.out.println("(Lcр): " + L_c);
+        System.out.println("(Wоч): " + W_och);
+        System.out.println("(Wc): " + W_c);
+
+        System.out.println("P000: " + (double) A_counter / countTicks);
+        System.out.println("P001: " + (double) B_counter / countTicks);
+        System.out.println("P010: " + (double) C_counter / countTicks);
+        System.out.println("P011: " + (double) D_counter / countTicks);
+        System.out.println("P110: " + (double) E_counter / countTicks);
+        System.out.println("P111: " + (double) F_counter / countTicks);
+
 
     }
 
