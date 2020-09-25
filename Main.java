@@ -28,7 +28,6 @@ public class Main extends Application {
         //primaryStage.show();
         Random numberGenerator = new Random();
 
-
         int countTicks = 1000000;
 
         double pi_1 = 0.45;
@@ -44,7 +43,6 @@ public class Main extends Application {
         double W_och = 0;
         double K_channel_1 = 0;
         double K_channel_2 = 0;
-
 
         String state = "000";
         double randomQuery = 0;
@@ -68,7 +66,6 @@ public class Main extends Application {
             randomFirstChannel = getScaledValue(numberGenerator.nextDouble(), 2);
             randomSecondChannel = getScaledValue(numberGenerator.nextDouble(), 2);
 
-
             if(state.equals("000")) {
                 if (randomQuery <= p) {
                     state = "000";
@@ -80,6 +77,7 @@ public class Main extends Application {
 
             else if(state.equals("001"))
             {
+                K_channel_2++;
                 B_counter++;
                 L_c++;
 
@@ -97,6 +95,7 @@ public class Main extends Application {
             }
             else if(state.equals("010"))
             {
+                K_channel_1++;
                 C_counter++;
                 L_c++;
 
@@ -109,12 +108,12 @@ public class Main extends Application {
                 else if(randomQuery >= p && randomFirstChannel <= pi_1)
                     state = "110";
 
-                if(randomFirstChannel >= pi_1)
-                    A++;
             }
 
             else if(state.equals("011"))
             {
+                K_channel_1++;
+                K_channel_2++;
                 D_counter++;
                 L_c += 2;
 
@@ -135,15 +134,13 @@ public class Main extends Application {
                 else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
                     state = "001";
 
-
-                else if(randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
-                    A+=2;
-                else if(randomFirstChannel >= pi_1 || randomSecondChannel >= pi_2)
+                if(randomSecondChannel >= pi_2)
                     A++;
 
             }
             else if(state.equals("110"))
             {
+                K_channel_1++;
                 E_counter++;
                 L_c += 2;
                 L_och++;
@@ -160,11 +157,11 @@ public class Main extends Application {
                 else if(randomQuery >= p && randomFirstChannel >= pi_1)
                     state = "111";
 
-                if(randomFirstChannel >= pi_1)
-                    A++;
             }
             else if(state.equals("111"))
             {
+                K_channel_1++;
+                K_channel_2++;
                 F_counter++;
                 L_c += 3;
                 L_och++;
@@ -194,9 +191,7 @@ public class Main extends Application {
                     P_otk++;
                 }
 
-                if(randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
-                    A+= 2;
-                else if(randomFirstChannel >= pi_1 || randomSecondChannel >= pi_2)
+                if(randomSecondChannel >= pi_2)
                     A++;
             }
 
@@ -209,6 +204,8 @@ public class Main extends Application {
         L_och /= countTicks;
         W_c = L_c / A;
         W_och = L_och / A;
+        K_channel_1 /= countTicks;
+        K_channel_2 /= countTicks;
 
         System.out.println("(А): " + A);
         System.out.println("(Q): " + Q);
@@ -220,6 +217,9 @@ public class Main extends Application {
         System.out.println("(Wоч): " + W_och);
         System.out.println("(Wc): " + W_c);
 
+        System.out.println("(K1): " + K_channel_1);
+        System.out.println("(K2): " + K_channel_2);
+
         System.out.println("P000: " + (double) A_counter / countTicks);
         System.out.println("P001: " + (double) B_counter / countTicks);
         System.out.println("P010: " + (double) C_counter / countTicks);
@@ -227,9 +227,7 @@ public class Main extends Application {
         System.out.println("P110: " + (double) E_counter / countTicks);
         System.out.println("P111: " + (double) F_counter / countTicks);
 
-
     }
-
 
     public static void main(String[] args) {
         launch(args);
