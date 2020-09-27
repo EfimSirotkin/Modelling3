@@ -49,6 +49,7 @@ public class Main extends Application {
         double randomFirstChannel = 0;
         double randomSecondChannel = 0;
 
+
         int A_counter = 0;
         int B_counter = 0;
         int C_counter = 0;
@@ -62,14 +63,14 @@ public class Main extends Application {
         {
             System.out.flush();
             System.out.println(state);
-            randomQuery = getScaledValue(numberGenerator.nextDouble(), 2);
-            randomFirstChannel = getScaledValue(numberGenerator.nextDouble(), 2);
-            randomSecondChannel = getScaledValue(numberGenerator.nextDouble(), 2);
+            randomQuery = getScaledValue(numberGenerator.nextDouble(), 4);
+            randomFirstChannel = getScaledValue(numberGenerator.nextDouble(), 4);
+            randomSecondChannel = getScaledValue(numberGenerator.nextDouble(), 4);
 
             if(state.equals("000")) {
                 if (randomQuery <= p) {
                     state = "000";
-                } else if (randomQuery >= p) {
+                } else if (randomQuery > p) {
                     state = "010";
                 }
                 A_counter++;
@@ -81,13 +82,13 @@ public class Main extends Application {
                 B_counter++;
                 L_c++;
 
-                if(randomQuery <= p && randomSecondChannel >= pi_2)
+                if(randomQuery <= p && randomSecondChannel > pi_2)
                     state = "000";
                 else if(randomQuery <= p && randomSecondChannel <= pi_2)
                     state = "001";
-                else if(randomQuery >= p && randomSecondChannel >= pi_2)
+                else if(randomQuery > p && randomSecondChannel > pi_2)
                     state = "010";
-                else if(randomQuery >= p && randomSecondChannel <= pi_2)
+                else if(randomQuery > p && randomSecondChannel <= pi_2)
                     state = "011";
 
                 if(randomSecondChannel >= pi_2)
@@ -101,11 +102,11 @@ public class Main extends Application {
 
                 if(randomQuery <= p && randomFirstChannel <= pi_1)
                     state = "010";
-                else if(randomQuery <= p && randomFirstChannel >= pi_1)
+                else if(randomQuery <= p && randomFirstChannel > pi_1)
                     state = "001";
-                else if(randomQuery >= p && randomFirstChannel >= pi_1)
+                else if(randomQuery > p && randomFirstChannel > pi_1)
                     state = "011";
-                else if(randomQuery >= p && randomFirstChannel <= pi_1)
+                else if(randomQuery > p && randomFirstChannel <= pi_1)
                     state = "110";
 
             }
@@ -119,22 +120,25 @@ public class Main extends Application {
 
                 if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
                     state = "011";
-                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery > p && randomFirstChannel > pi_1 && randomSecondChannel > pi_2)
                     state = "011";
-                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
+                else if(randomQuery > p && randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
                     state = "011";
-                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery > p && randomFirstChannel <= pi_1 && randomSecondChannel > pi_2)
                     state = "110";
-                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel > pi_2)
                     state = "010";
-                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
+                else if(randomQuery > p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
                     state = "111";
-                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery <= p && randomFirstChannel > pi_1 && randomSecondChannel > pi_2)
                     state = "001";
-                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
+                else if(randomQuery <= p && randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
                     state = "001";
 
-                if(randomSecondChannel >= pi_2)
+                if(randomFirstChannel > pi_1 && randomSecondChannel < pi_2)
+                    P_otk++;
+
+                if(randomSecondChannel > pi_2)
                     A++;
 
             }
@@ -145,17 +149,17 @@ public class Main extends Application {
                 L_c += 2;
                 L_och++;
 
-                if(randomQuery <= p && randomFirstChannel >= pi_1)
+                if(randomQuery <= p && randomFirstChannel > pi_1)
                     state = "011";
                 else if((randomQuery <= p && randomFirstChannel <= pi_1))
                     state = "110";
-                else if((randomQuery >= p && randomFirstChannel <= pi_1))
-                {
+                else if((randomQuery > p && randomFirstChannel <= pi_1))
                     state = "110";
-                    P_otk++;
-                }
-                else if(randomQuery >= p && randomFirstChannel >= pi_1)
+                else if(randomQuery > p && randomFirstChannel > pi_1)
                     state = "111";
+
+                if(randomQuery > p && randomFirstChannel < pi_1)
+                    P_otk++;
 
             }
             else if(state.equals("111"))
@@ -166,32 +170,30 @@ public class Main extends Application {
                 L_c += 3;
                 L_och++;
 
-                if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                if(randomQuery > p && randomFirstChannel > pi_1 && randomSecondChannel > pi_2)
                     state = "111";
                 else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
                     state = "111";
-                else if(randomQuery >= p && randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2)
+                else if(randomQuery > p && randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
                     state = "111";
-
-                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
-                {
+                else if(randomQuery > p && randomFirstChannel <= pi_1 && randomSecondChannel <= pi_2)
                     state = "111";
-                    P_otk++;
-                }
-
-                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery <= p && randomFirstChannel > pi_1 && randomSecondChannel > pi_2)
                     state = "011";
-                else if(randomQuery <= p && randomFirstChannel >= pi_1 && randomSecondChannel<= pi_2)
+                else if(randomQuery <= p && randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
                     state = "011";
-                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
+                else if(randomQuery <= p && randomFirstChannel <= pi_1 && randomSecondChannel > pi_2)
                     state = "110";
-                else if(randomQuery >= p && randomFirstChannel <= pi_1 && randomSecondChannel >= pi_2)
-                {
+                else if(randomQuery > p && randomFirstChannel <= pi_1 && randomSecondChannel > pi_2)
                     state = "110";
-                    P_otk++;
-                }
 
-                if(randomSecondChannel >= pi_2)
+                if(randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
+                    P_otk++;
+
+                if(randomQuery > p && randomFirstChannel <= pi_1)
+                    P_otk++;
+
+                if(randomSecondChannel > pi_2)
                     A++;
             }
 
