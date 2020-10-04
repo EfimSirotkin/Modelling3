@@ -29,11 +29,14 @@ public class Main extends Application {
         Random numberGenerator = new Random();
 
         int countTicks = 1000000;
+        int totalQuery = 0;
 
         double pi_1 = 0.45;
         double pi_2 = 0.35;
         double p = 0.5;
 
+
+        double Q2 = 0;
         double A = 0;
         double Q = 0;
         double P_otk = 0;
@@ -71,9 +74,11 @@ public class Main extends Application {
                 if (randomQuery <= p) {
                     state = "000";
                 } else if (randomQuery > p) {
+                    totalQuery++;
                     state = "010";
                 }
                 A_counter++;
+
             }
 
             else if(state.equals("001"))
@@ -82,23 +87,29 @@ public class Main extends Application {
                 B_counter++;
                 L_c++;
 
+
                 if(randomQuery <= p && randomSecondChannel > pi_2)
                     state = "000";
                 else if(randomQuery <= p && randomSecondChannel <= pi_2)
                     state = "001";
-                else if(randomQuery > p && randomSecondChannel > pi_2)
+                else if(randomQuery > p && randomSecondChannel > pi_2) {
                     state = "010";
+                }
                 else if(randomQuery > p && randomSecondChannel <= pi_2)
                     state = "011";
 
-                if(randomSecondChannel >= pi_2)
+                if(randomSecondChannel >= pi_2) {
                     A++;
+                }
+                if(randomQuery > p)
+                    totalQuery++;
             }
             else if(state.equals("010"))
             {
                 K_channel_1++;
                 C_counter++;
                 L_c++;
+
 
                 if(randomQuery <= p && randomFirstChannel <= pi_1)
                     state = "010";
@@ -108,6 +119,9 @@ public class Main extends Application {
                     state = "011";
                 else if(randomQuery > p && randomFirstChannel <= pi_1)
                     state = "110";
+
+                if(randomQuery > p)
+                    totalQuery++;
 
             }
 
@@ -135,11 +149,18 @@ public class Main extends Application {
                 else if(randomQuery <= p && randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
                     state = "001";
 
-                if(randomFirstChannel > pi_1 && randomSecondChannel < pi_2)
+                if(randomFirstChannel >= pi_1 && randomSecondChannel <= pi_2) {
                     P_otk++;
 
-                if(randomSecondChannel > pi_2)
+                }
+
+                if(randomSecondChannel > pi_2) {
                     A++;
+                }
+
+                if(randomQuery > p)
+                    totalQuery++;
+
 
             }
             else if(state.equals("110"))
@@ -158,8 +179,12 @@ public class Main extends Application {
                 else if(randomQuery > p && randomFirstChannel > pi_1)
                     state = "111";
 
-                if(randomQuery > p && randomFirstChannel < pi_1)
+                if(randomFirstChannel < pi_1) {
                     P_otk++;
+                }
+                if(randomQuery > p)
+                    totalQuery++;
+
 
             }
             else if(state.equals("111"))
@@ -187,30 +212,40 @@ public class Main extends Application {
                 else if(randomQuery > p && randomFirstChannel <= pi_1 && randomSecondChannel > pi_2)
                     state = "110";
 
-                if(randomFirstChannel > pi_1 && randomSecondChannel <= pi_2)
+                if(randomFirstChannel > pi_1 && randomSecondChannel <= pi_2) {
                     P_otk++;
 
-                if(randomQuery > p && randomFirstChannel <= pi_1)
+                }
+
+                if(randomFirstChannel <= pi_1) {
                     P_otk++;
 
-                if(randomSecondChannel > pi_2)
+                }
+
+                if(randomSecondChannel > pi_2) {
                     A++;
+                }
+                if(randomQuery > p)
+                    totalQuery++;
+
+
             }
 
             ++counter;
         }
-        P_otk /= countTicks;
-        Q = 1 - P_otk;
+
+        P_otk = (totalQuery - A)/ totalQuery;
+        Q2 = 1 - P_otk;
         A /= countTicks;
         L_c /= countTicks;
         L_och /= countTicks;
-        W_c = L_c / A;
-        W_och = L_och / A;
+        W_c = L_c / p;
+        W_och = L_och / p;
         K_channel_1 /= countTicks;
         K_channel_2 /= countTicks;
 
         System.out.println("(А): " + A);
-        System.out.println("(Q): " + Q);
+        System.out.println("(Q): "+ Q2);
 
         System.out.println("(Pотк): " + P_otk);
 
@@ -221,13 +256,6 @@ public class Main extends Application {
 
         System.out.println("(K1): " + K_channel_1);
         System.out.println("(K2): " + K_channel_2);
-
-        System.out.println("P000: " + (double) A_counter / countTicks);
-        System.out.println("P001: " + (double) B_counter / countTicks);
-        System.out.println("P010: " + (double) C_counter / countTicks);
-        System.out.println("P011: " + (double) D_counter / countTicks);
-        System.out.println("P110: " + (double) E_counter / countTicks);
-        System.out.println("P111: " + (double) F_counter / countTicks);
 
     }
 
